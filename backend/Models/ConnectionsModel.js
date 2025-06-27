@@ -4,7 +4,8 @@ import mongoose from 'mongoose';
 const connectionsSchema = new mongoose.Schema({
     connectionAccountNumber: {
         type: String,
-        required: true
+        required: true,
+        unique: true
     },
     ownerName: {
         type: String,

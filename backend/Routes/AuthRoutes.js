@@ -18,6 +18,7 @@ router.post('/login', async (req, res) => {
     process.env.JWT_SECRET,
     { expiresIn: '7d' }
   );
+  
 
   req.session.userId = user._id;
   req.session.role = user.role;

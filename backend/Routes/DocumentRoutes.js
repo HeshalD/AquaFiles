@@ -4,6 +4,8 @@ import Documents from '../Models/DocumentsModel.js';
 import { uploadDocuments } from '../middleware/uploadDocuments.js';
 import { protect, authorize } from '../middleware/authMiddleware.js';
 import path from 'path';
+import archiver from 'archiver';
+import fs from 'fs';
 
 const router = express.Router();
 
@@ -75,7 +77,7 @@ router.get('/', protect, authorize('data_viewing'), async (req, res) => {
 });
 
 // GET /documents/:connectionAccountNumber - Get documents by connectionAccountNumber
-router.get('/:connectionAccountNumber', protect, authorize('data_viewing'), async (req, res) => {
+router.get('/:connectionAccountNumber', protect, authorize('data_viewing','data_entry'), async (req, res) => {
     try {
         const { connectionAccountNumber } = req.params;
         const document = await Documents.findOne({ connectionAccountNumber });
@@ -140,6 +142,53 @@ router.delete('/:connectionAccountNumber', protect, authorize('data_entry'), asy
     } catch (error) {
         res.status(500).json({ message: 'Error deleting documents', error: error.message });
     }
+});
+
+//Download all documents
+router.get('/:connectionAccountNumber/download', protect, authorize('data_viewing'), async (req, res) => {
+  const { connectionAccountNumber } = req.params;
+
+  try {
+    const documents = await Documents.findOne({ connectionAccountNumber });
+    if (!documents) {
+      return res.status(404).json({ message: 'Documents not found' });
+    }
+
+    const archive = archiver('zip', { zlib: { level: 9 } });
+    const zipFileName = `${connectionAccountNumber}_documents.zip`;
+
+    res.set({
+      'Content-Type': 'application/zip',
+      'Content-Disposition': `attachment; filename="${zipFileName}"`,
+    });
+
+    archive.pipe(res);
+
+    // Add each file to the archive
+    for (const [key, value] of Object.entries(documents.toObject())) {
+      if (typeof value === 'object' && value.url) {
+        const filePath = path.join('uploads', connectionAccountNumber, value.filename);
+        if (fs.existsSync(filePath)) {
+          archive.file(filePath, { name: value.filename });
+        }
+      }
+    }
+
+    // Add "Other" files (if available)
+    if (Array.isArray(documents.Other)) {
+      for (const file of documents.Other) {
+        const filePath = path.join('uploads', connectionAccountNumber, file.filename);
+        if (fs.existsSync(filePath)) {
+          archive.file(filePath, { name: file.filename });
+        }
+      }
+    }
+
+    await archive.finalize();
+  } catch (err) {
+    console.error('Download error:', err);
+    res.status(500).json({ message: 'Failed to create zip', error: err.message });
+  }
 });
 
 export default router;

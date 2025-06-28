@@ -10,9 +10,12 @@ export default function Login() {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post('/auth/login', { username, password });
+      const res = await axios.post('/auth/login', { username, password }, { withCredentials: true });
+
+      localStorage.setItem('role', res.data.role);
+
       if (res.data.role === 'data_entry') {
-        navigate('/upload');
+        navigate('/data-entry');
       } else {
         navigate('/dashboard');
       }

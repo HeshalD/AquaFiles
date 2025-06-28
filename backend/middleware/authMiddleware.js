@@ -2,22 +2,28 @@ import jwt from 'jsonwebtoken';
 import User from '../Models/UserModel.js';
 
 export const protect = async (req, res, next) => {
-  const token = req.headers.authorization?.split(' ')[1];
-  if (!token) return res.status(401).json({ message: 'Not authorized' });
-
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = await User.findById(decoded.id).select('-password');
+    if (!req.session || !req.session.userId) {
+      return res.status(401).json({ message: 'Not authorized (session missing)' });
+    }
+    
+    // Populate req.user with user data from database
+    const user = await User.findById(req.session.userId);
+    if (!user) {
+      return res.status(401).json({ message: 'User not found' });
+    }
+    
+    req.user = user;
     next();
-  } catch {
-    res.status(401).json({ message: 'Invalid token' });
+  } catch (error) {
+    return res.status(401).json({ message: 'Not authorized (invalid session)' });
   }
 };
 
 export const authorize = (...roles) => {
   return (req, res, next) => {
-    if (!roles.includes(req.user.role)) {
-      return res.status(403).json({ message: 'Access denied' });
+    if (!req.session || !roles.includes(req.session.role)) {
+      return res.status(403).json({ message: 'Access denied (role mismatch)' });
     }
     next();
   };

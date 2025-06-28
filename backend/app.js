@@ -10,6 +10,7 @@ import connectionsRouter from './Routes/ConnectionRoutes.js';
 import documentRouter from './Routes/DocumentRoutes.js';
 import userRouter from './Routes/UserRoutes.js'
 import authRouter from './Routes/AuthRoutes.js'
+import path from 'path';
 
 dotenv.config();
 
@@ -22,6 +23,11 @@ const apiLimiter = rateLimit({
 });
 
 app.use(express.json());
+
+
+// Serve the uploads folder statically
+const __dirname = path.resolve();
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 app.use(cors({
     origin: process.env.FRONTEND_API, 

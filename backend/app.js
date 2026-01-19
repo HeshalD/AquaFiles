@@ -10,6 +10,7 @@ import connectionsRouter from './Routes/ConnectionRoutes.js';
 import documentRouter from './Routes/DocumentRoutes.js';
 import userRouter from './Routes/UserRoutes.js'
 import authRouter from './Routes/AuthRoutes.js'
+import nameChangeRouter from './Routes/NameChangeRoutes.js'
 import path from 'path';
 
 dotenv.config();
@@ -58,6 +59,7 @@ app.use('/connections', connectionsRouter);
 app.use('/documents', documentRouter);
 app.use('/users', userRouter);
 app.use('/auth', authRouter);
+app.use('/namechange', nameChangeRouter);
 // MongoDB connection
 const connectDB = async () => {
     try {

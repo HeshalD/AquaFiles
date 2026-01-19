@@ -2,6 +2,9 @@ import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
 
 const userSchema = new mongoose.Schema({
+  fullname: { type: String, required: true },
+  position: { type: String, required: true },
+  employeeID: { type: String, required: true },
   username: { type: String, required: true, unique: true },
   password: { type: String, required: true },
   role: {

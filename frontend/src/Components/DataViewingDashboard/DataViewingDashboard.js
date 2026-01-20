@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import axios from '../../api/axios';
 import useLogout from '../../Hooks/useLogout';
+
 
 const areas = ['Area 1', 'Area 2', 'Area 3']; // replace with your actual area options
 const purposes = ['Purpose A', 'Purpose B', 'Purpose C']; // replace with your actual purpose options
 
 const DataViewingDashboard = () => {
   const logout = useLogout();
+  const navigate = useNavigate();
 
   const [connections, setConnections] = useState([]);
   const [search, setSearch] = useState('');
@@ -55,6 +57,7 @@ const DataViewingDashboard = () => {
     <div className="p-8">
       <div className="flex justify-between mb-4">
         <h1 className="text-2xl font-bold">Data Viewing Dashboard</h1>
+        <button onClick={() => navigate('/examine')} className="px-4 py-2 text-white bg-green-600 rounded">Examine Name Change Form</button>
         <button
           onClick={logout}
           className="px-4 py-2 text-white bg-red-500 rounded"

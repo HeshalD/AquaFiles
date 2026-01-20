@@ -133,7 +133,7 @@ router.put('/approval3/:id', protect, authorize('data_viewing'), async (req, res
 });
 
 // GET /namechange - Get all name change forms
-router.get('/', protect, authorize('data_viewing'), async (req, res) => {
+router.get('/', protect, authorize('data_viewing', 'data_entry'), async (req, res) => {
     try {
         const nameChanges = await NameChange.find().sort({ createdAt: -1 });
         res.status(200).json(nameChanges);
@@ -195,6 +195,55 @@ router.get('/approval3/:formApproval3EmpID', protect, authorize('data_viewing'),
         res.status(200).json(nameChanges);
     } catch (error) {
         res.status(500).json({ message: 'Error fetching name change forms', error: error.message });
+    }
+});
+
+// PUT /namechange/examine/:employeeID - Examine a name change form
+router.put('/examine/:employeeID', protect, authorize('data_entry', 'data_viewing'), async (req, res) => {
+    try {
+        const { formExamineEmpName } = req.body;
+        const employeeID = req.params.employeeID;
+        
+        if (!formExamineEmpName) {
+            return res.status(400).json({ message: 'formExamineEmpName is required' });
+        }
+
+        // Find all forms for this employee that haven't been examined yet
+        const formsToExamine = await NameChange.find({
+            $or: [
+                { formExamineEmpID: { $exists: false } },
+                { formExamineEmpID: { $eq: '' } },
+                { formExamineEmpID: { $eq: null } }
+            ]
+        });
+
+        if (formsToExamine.length === 0) {
+            return res.status(404).json({ message: 'No name change forms found to examine for this employee' });
+        }
+
+        // Update all unexamined forms for this employee
+        const updatedNameChanges = await NameChange.updateMany(
+            {
+                $or: [
+                    { formExamineEmpID: { $exists: false } },
+                    { formExamineEmpID: { $eq: '' } },
+                    { formExamineEmpID: { $eq: null } }
+                ]
+            },
+            { 
+                formExamineEmpID: employeeID,
+                formExamineEmpName,
+                formExamineDate: new Date().toISOString()
+            },
+            { new: true, runValidators: true }
+        );
+
+        res.status(200).json({ 
+            message: `${updatedNameChanges.modifiedCount} name change forms examined successfully`, 
+            modifiedCount: updatedNameChanges.modifiedCount
+        });
+    } catch (error) {
+        res.status(400).json({ message: 'Error examining name change forms', error: error.message });
     }
 });
 

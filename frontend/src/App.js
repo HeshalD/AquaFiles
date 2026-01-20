@@ -10,6 +10,7 @@ import ConnectionDetail from './Components/ConnectionDetails/ConnectionDetails.j
 import EditConnection from './Components/EditConnetions/EditConnections.js';
 import NameChangeForm from './Components/NameChangeForm/NameChangeForm';
 import ApprovalsDashboard from './Components/ApprovalsDashboard/ApprovalsDashboard';
+import NameChangeExamine from './Components/NameChangeExamine/NameChangeExamine';
 
 function App() {
   return (
@@ -55,6 +56,15 @@ function App() {
             element={
               <ProtectedRoute allowedRole="data_viewing">
                 <ApprovalsDashboard />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/examine"
+            element={
+              <ProtectedRoute allowedRole={["data_viewing", "data_entry"]}>
+                <NameChangeExamine />
               </ProtectedRoute>
             }
           />

@@ -10,6 +10,7 @@ const useLogout = () => {
       localStorage.removeItem('role');
       localStorage.removeItem('employeeID');
       localStorage.removeItem('fullname');
+      localStorage.removeItem('position');
       navigate('/');
     } catch (err) {
       console.error('Logout failed:', err);

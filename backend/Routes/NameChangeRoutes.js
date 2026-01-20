@@ -172,9 +172,6 @@ router.get('/connection/:connectionAccountNumber', protect, authorize('data_view
 router.get('/approval1/:formApproval1EmpID', protect, authorize('data_viewing'), async (req, res) => {
     try {
         const nameChanges = await NameChange.find({ formApproval1EmpID: req.params.formApproval1EmpID });
-        if (nameChanges.length === 0) {
-            return res.status(404).json({ message: 'No name change forms found for this approval 1 employee ID' });
-        }
         res.status(200).json(nameChanges);
     } catch (error) {
         res.status(500).json({ message: 'Error fetching name change forms', error: error.message });
@@ -185,9 +182,6 @@ router.get('/approval1/:formApproval1EmpID', protect, authorize('data_viewing'),
 router.get('/approval2/:formApproval2EmpID', protect, authorize('data_viewing'), async (req, res) => {
     try {
         const nameChanges = await NameChange.find({ formApproval2EmpID: req.params.formApproval2EmpID });
-        if (nameChanges.length === 0) {
-            return res.status(404).json({ message: 'No name change forms found for this approval 2 employee ID' });
-        }
         res.status(200).json(nameChanges);
     } catch (error) {
         res.status(500).json({ message: 'Error fetching name change forms', error: error.message });
@@ -198,11 +192,31 @@ router.get('/approval2/:formApproval2EmpID', protect, authorize('data_viewing'),
 router.get('/approval3/:formApproval3EmpID', protect, authorize('data_viewing'), async (req, res) => {
     try {
         const nameChanges = await NameChange.find({ formApproval3EmpID: req.params.formApproval3EmpID });
-        if (nameChanges.length === 0) {
-            return res.status(404).json({ message: 'No name change forms found for this approval 3 employee ID' });
-        }
         res.status(200).json(nameChanges);
     } catch (error) {
+        res.status(500).json({ message: 'Error fetching name change forms', error: error.message });
+    }
+});
+
+// GET /namechange/my-approvals - Get name change forms where logged-in user is an approver
+router.get('/my-approvals', protect, authorize('data_viewing'), async (req, res) => {
+    try {
+        console.log('User in my-approvals:', req.user);
+        console.log('EmployeeID:', req.user.employeeID);
+        
+        const employeeID = req.user.employeeID;
+        const nameChanges = await NameChange.find({
+            $or: [
+                { formApproval1EmpID: employeeID },
+                { formApproval2EmpID: employeeID },
+                { formApproval3EmpID: employeeID }
+            ]
+        }).sort({ createdAt: -1 });
+        
+        console.log('Found name changes:', nameChanges.length);
+        res.status(200).json(nameChanges);
+    } catch (error) {
+        console.error('Error in my-approvals:', error);
         res.status(500).json({ message: 'Error fetching name change forms', error: error.message });
     }
 });

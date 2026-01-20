@@ -21,9 +21,14 @@ export default function Login() {
       if (res.data.fullname) {
         localStorage.setItem('fullname', res.data.fullname);
       }
+      if (res.data.position) {
+        localStorage.setItem('position', res.data.position);
+      }
 
       if (res.data.role === 'data_entry') {
         navigate('/data-entry');
+      } else if (res.data.role === 'data_viewing' && (res.data.position === 'Commercial Officer' || res.data.position === 'Area Engineer' || res.data.position === 'ONM Engineer')) {
+        navigate('/approvals');
       } else {
         navigate('/dashboard');
       }

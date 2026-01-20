@@ -9,7 +9,7 @@ import ConnectionForm from './Components/ConnectionForm/ConnectionForm';
 import ConnectionDetail from './Components/ConnectionDetails/ConnectionDetails.js';
 import EditConnection from './Components/EditConnetions/EditConnections.js';
 import NameChangeForm from './Components/NameChangeForm/NameChangeForm';
-
+import ApprovalsDashboard from './Components/ApprovalsDashboard/ApprovalsDashboard';
 
 function App() {
   return (
@@ -49,6 +49,16 @@ function App() {
               </ProtectedRoute>
             }
           />
+
+          <Route
+            path="/approvals"
+            element={
+              <ProtectedRoute allowedRole="data_viewing">
+                <ApprovalsDashboard />
+              </ProtectedRoute>
+            }
+          />
+
           <Route
             path="/addConnection"
             element={

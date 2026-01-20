@@ -13,6 +13,14 @@ export default function Login() {
       const res = await axios.post('/auth/login', { username, password }, { withCredentials: true });
 
       localStorage.setItem('role', res.data.role);
+      
+      // Store user information if available
+      if (res.data.employeeID) {
+        localStorage.setItem('employeeID', res.data.employeeID);
+      }
+      if (res.data.fullname) {
+        localStorage.setItem('fullname', res.data.fullname);
+      }
 
       if (res.data.role === 'data_entry') {
         navigate('/data-entry');

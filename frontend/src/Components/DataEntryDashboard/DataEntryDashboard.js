@@ -57,6 +57,7 @@ const DataEntryDashboard = () => {
 
       <button onClick={logout} className="px-4 py-2 text-white bg-red-500 rounded">Logout</button>
       <button onClick={() => navigate('/connection-form')} className="px-4 py-2 text-white bg-blue-600 rounded">Add Connection</button>
+      <button onClick={() => navigate('/name-change')} className="px-4 py-2 text-white bg-green-600 rounded">Name Change Form</button>
 
       <input
         type="text"

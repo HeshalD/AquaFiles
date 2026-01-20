@@ -8,6 +8,8 @@ const useLogout = () => {
     try {
       await axios.post('/auth/logout', {}, { withCredentials: true }); // Include credentials
       localStorage.removeItem('role');
+      localStorage.removeItem('employeeID');
+      localStorage.removeItem('fullname');
       navigate('/');
     } catch (err) {
       console.error('Logout failed:', err);

@@ -8,6 +8,7 @@ import UploadDocuments from './Components/UploadDocuments/UploadDocuments.js.js'
 import ConnectionForm from './Components/ConnectionForm/ConnectionForm';
 import ConnectionDetail from './Components/ConnectionDetails/ConnectionDetails.js';
 import EditConnection from './Components/EditConnetions/EditConnections.js';
+import NameChangeForm from './Components/NameChangeForm/NameChangeForm';
 
 
 function App() {
@@ -37,6 +38,14 @@ function App() {
             element={
               <ProtectedRoute allowedRole="data_entry">
                 <ConnectionForm />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/name-change"
+            element={
+              <ProtectedRoute allowedRole="data_entry">
+                <NameChangeForm />
               </ProtectedRoute>
             }
           />

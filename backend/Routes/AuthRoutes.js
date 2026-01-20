@@ -14,7 +14,7 @@ router.post('/login', async (req, res) => {
   }
 
   const token = jwt.sign(
-    { id: user._id, role: user.role },
+    { id: user._id, role: user.role, fullname: user.fullname, employeeID: user.employeeID },
     process.env.JWT_SECRET,
     { expiresIn: '7d' }
   );
@@ -22,8 +22,10 @@ router.post('/login', async (req, res) => {
 
   req.session.userId = user._id;
   req.session.role = user.role;
+  req.session.fullname = user.fullname;
+  req.session.employeeID = user.employeeID;
 
-  res.status(200).json({ token, role: user.role });
+  res.status(200).json({ token, role: user.role, fullname: user.fullname, employeeID: user.employeeID });
 });
 
 router.post('/logout', (req, res) => {

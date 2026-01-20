@@ -36,15 +36,15 @@ const NameChangeSchema = new mongoose.Schema({
     },
     formExamineEmpID: {
         type: String,
-        required: true
+        required: false
     },
     formExamineEmpName: {
         type: String,
-        required: true
+        required: false
     },
     formExamineDate: {
         type: String,
-        required: true
+        required: false
     },
     formApproval1Position: {
         type: String,

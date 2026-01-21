@@ -205,6 +205,10 @@ export default function ApprovalsDashboard() {
                       <span className="text-gray-900">{form.changeMethod}</span>
                     </div>
                     <div className="flex flex-col gap-1">
+                      <label className="text-sm font-semibold text-gray-600 uppercase tracking-wide">Complaint Number:</label>
+                      <span className="text-gray-900">{form.complaintNumber || 'N/A'}</span>
+                    </div>
+                    <div className="flex flex-col gap-1">
                       <label className="text-sm font-semibold text-gray-600 uppercase tracking-wide">Prepared By:</label>
                       <span className="text-gray-900">{form.formPreparationEmpName} ({form.formPreparationEmpID})</span>
                     </div>

@@ -2,6 +2,11 @@ import mongoose from 'mongoose';
 import Connection from './ConnectionsModel.js';
 
 const NameChangeSchema = new mongoose.Schema({
+    complaintNumber: {
+        type: String,
+        required: false,
+        unique: false
+    },
     connectionAccountNumber: {
         type: String,
         required: true,

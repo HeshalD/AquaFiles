@@ -9,6 +9,7 @@ function NameChangeForm() {
     connectionAccountAddress: '',
     newConnectionAccountName: '',
     changeMethod: '',
+    complaintNumber: '',
     formPreparationEmpID: '',
     formPreparationEmpName: '',
     formPreparationDate: '',
@@ -194,6 +195,7 @@ function NameChangeForm() {
         connectionAccountAddress: '',
         newConnectionAccountName: '',
         changeMethod: '',
+        complaintNumber: '',
         formPreparationEmpID: '',
         formPreparationEmpName: '',
         formPreparationDate: '',
@@ -380,6 +382,19 @@ function NameChangeForm() {
                   <option value="Correction">Correction</option>
                   <option value="Other">Other</option>
                 </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Complaint Number
+                </label>
+                <input
+                  type="text"
+                  name="complaintNumber"
+                  value={formData.complaintNumber}
+                  onChange={handleChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Enter complaint number"
+                />
               </div>
             </div>
           </div>
@@ -618,6 +633,10 @@ function NameChangeForm() {
                 <div>
                   <span className="font-medium text-gray-600">Change Method:</span>
                   <p className="text-gray-900">{formData.changeMethod}</p>
+                </div>
+                <div>
+                  <span className="font-medium text-gray-600">Complaint Number:</span>
+                  <p className="text-gray-900">{formData.complaintNumber || 'N/A'}</p>
                 </div>
               </div>
             </div>

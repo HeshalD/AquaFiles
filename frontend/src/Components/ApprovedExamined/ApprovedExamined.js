@@ -44,6 +44,7 @@ function ApprovedExamined() {
               <p><strong>New Name:</strong> {form.newConnectionAccountName}</p>
               <p><strong>Address:</strong> {form.connectionAccountAddress}</p>
               <p><strong>Change Method:</strong> {form.changeMethod}</p>
+              <p><strong>Complaint Number:</strong> {form.complaintNumber || 'N/A'}</p>
               <p><strong>Examined By:</strong> {form.formExamineEmpName} ({form.formExamineEmpID})</p>
               <p><strong>Form Prepared By:</strong> {form.formPreparationEmpName} ({form.formPreparationEmpID})</p>
               <p><strong>Preparation Date:</strong> {new Date(form.formPreparationDate).toLocaleDateString()}</p>

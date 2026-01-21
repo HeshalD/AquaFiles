@@ -8,6 +8,7 @@ const router = express.Router();
 router.post('/add', protect, authorize('data_entry'), async (req, res) => {
     try {
         const {
+            complaintNumber,
             connectionAccountNumber,
             connectionAccountName,
             connectionAccountAddress,
@@ -25,6 +26,7 @@ router.post('/add', protect, authorize('data_entry'), async (req, res) => {
         } = req.body;
 
         const newNameChange = new NameChange({
+            complaintNumber,
             connectionAccountNumber,
             connectionAccountName,
             connectionAccountAddress,

@@ -58,6 +58,7 @@ const DataViewingDashboard = () => {
       <div className="flex justify-between mb-4">
         <h1 className="text-2xl font-bold">Data Viewing Dashboard</h1>
         <button onClick={() => navigate('/examine')} className="px-4 py-2 text-white bg-green-600 rounded">Examine Name Change Form</button>
+        <button onClick={() => navigate('/approved-examined')} className="px-4 py-2 text-white bg-green-600 rounded">Approved & Examined Name Change Form</button>
         <button
           onClick={logout}
           className="px-4 py-2 text-white bg-red-500 rounded"

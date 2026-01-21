@@ -11,6 +11,7 @@ import EditConnection from './Components/EditConnetions/EditConnections.js';
 import NameChangeForm from './Components/NameChangeForm/NameChangeForm';
 import ApprovalsDashboard from './Components/ApprovalsDashboard/ApprovalsDashboard';
 import NameChangeExamine from './Components/NameChangeExamine/NameChangeExamine';
+import ApprovedExamined from './Components/ApprovedExamined/ApprovedExamined';
 
 function App() {
   return (
@@ -65,6 +66,15 @@ function App() {
             element={
               <ProtectedRoute allowedRole={["data_viewing", "data_entry"]}>
                 <NameChangeExamine />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/approved-examined"
+            element={
+              <ProtectedRoute allowedRole={["data_entry", "data_viewing"]}>
+                <ApprovedExamined />
               </ProtectedRoute>
             }
           />

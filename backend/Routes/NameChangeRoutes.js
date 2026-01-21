@@ -142,6 +142,23 @@ router.get('/', protect, authorize('data_viewing', 'data_entry'), async (req, re
     }
 });
 
+// GET /namechange/approved-examined - Get name change forms with examination details and all approvals
+router.get('/approved-examined', protect, authorize('data_entry', 'data_viewing'), async (req, res) => {
+    try {
+        const nameChanges = await NameChange.find({
+            formExamineEmpID: { $exists: true, $ne: null, $ne: '' },
+            formExamineEmpName: { $exists: true, $ne: null, $ne: '' },
+            formApproval1Status: 'Approved',
+            formApproval2Status: 'Approved',
+            formApproval3Status: 'Approved'
+        }).sort({ createdAt: -1 });
+        
+        res.status(200).json(nameChanges);
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching approved and examined name change forms', error: error.message });
+    }
+});
+
 // GET /namechange/:id - Get a specific name change form
 router.get('/:id', protect, authorize('data_viewing'), async (req, res) => {
     try {

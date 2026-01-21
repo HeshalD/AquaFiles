@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import axios from '../../api/axios';
 import useLogout from '../../Hooks/useLogout';
+import { Search, LogOut, Eye, FileText, Download, Check, X, User } from 'lucide-react';
 
 export default function ApprovalsDashboard() {
   const [nameChanges, setNameChanges] = useState([]);
@@ -141,100 +142,135 @@ export default function ApprovalsDashboard() {
   };
 
   if (loading) {
-    return <div className="max-w-7xl mx-auto px-4 py-8">Loading...</div>;
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading approvals...</p>
+        </div>
+      </div>
+    );
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-8 font-sans">
-      <div className="mb-8 text-center">
-        <button 
-          onClick={logout} 
-          className="px-4 py-2 text-white bg-red-500 rounded hover:bg-red-600 transition-colors mb-4"
-        >
-          Logout
-        </button>
-        <h1 className="text-4xl font-bold text-slate-700 mb-2">My Approvals</h1>
-        <p className="text-lg text-gray-500">Name change forms requiring your approval</p>
-      </div>
-
-      {error && (
-        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded mb-6">
-          {error}
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+      {/* Header */}
+      <header className="bg-white border-b border-gray-200 shadow-sm">
+        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+          <div className="flex items-center space-x-3">
+            <div className="w-10 h-10 rounded-lg flex items-center justify-center" style={{ backgroundColor: '#510400' }}>
+              <span className="text-white font-bold text-lg">R</span>
+            </div>
+            <h1 className="text-2xl font-semibold" style={{ color: '#510400' }}>RecordRoom</h1>
+          </div>
+          
+          <div className="flex items-center space-x-3">
+            <button
+              onClick={logout}
+              className="flex items-center space-x-2 px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-all"
+            >
+              <LogOut size={18} />
+              <span className="hidden sm:inline">Logout</span>
+            </button>
+          </div>
         </div>
-      )}
+      </header>
 
-      {nameChanges.length === 0 ? (
-        <div className="text-center py-16 bg-gray-50 rounded-lg">
-          <p className="text-lg text-gray-600">No name change forms found requiring your approval.</p>
+      {/* Main Content */}
+      <main className="max-w-7xl mx-auto px-6 py-8">
+        {/* Page Title */}
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-gray-800 mb-2">My Approvals</h1>
+          <p className="text-gray-600">Name change forms requiring your approval</p>
         </div>
-      ) : (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
-          {nameChanges.map((form) => {
-            const approvalLevel = getApprovalLevel(form);
-            const canApproveForm = canApprove(form);
-            
-            return (
-              <div key={form._id} className="bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 overflow-hidden">
-                <div className="bg-gradient-to-r from-purple-500 to-purple-700 text-white p-5 flex justify-between items-center">
-                  <h3 className="text-xl font-semibold">Connection: {form.connectionAccountNumber}</h3>
-                  <span className={`px-3 py-1 rounded-full text-sm font-medium backdrop-blur-sm ${
-                    approvalLevel === 1 ? 'bg-green-500/30' :
-                    approvalLevel === 2 ? 'bg-yellow-500/30' :
-                    'bg-red-500/30'
-                  }`}>
-                    Level {approvalLevel} Approver
-                  </span>
-                </div>
 
-                <div className="p-6">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                    <div className="flex flex-col gap-1">
-                      <label className="text-sm font-semibold text-gray-600 uppercase tracking-wide">Account Name:</label>
-                      <span className="text-gray-900">{form.connectionAccountName}</span>
+        {error && (
+          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6">
+            {error}
+          </div>
+        )}
+        {nameChanges.length === 0 ? (
+          <div className="bg-white rounded-xl shadow-sm p-12 text-center">
+            <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <User size={32} className="text-gray-400" />
+            </div>
+            <p className="text-lg text-gray-600 mb-2">No approvals pending</p>
+            <p className="text-sm text-gray-400">There are no name change forms requiring your approval at this time.</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {nameChanges.map((form) => {
+              const approvalLevel = getApprovalLevel(form);
+              const canApproveForm = canApprove(form);
+              
+              return (
+                <div key={form._id} className="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200 overflow-hidden">
+                  <div className="p-6 border-b border-gray-100">
+                    <div className="flex justify-between items-start mb-4">
+                      <div>
+                        <h3 className="text-xl font-semibold text-gray-800 mb-1" style={{ color: '#510400' }}>
+                          {form.complaintNumber}
+                        </h3>
+                        <p className="text-sm text-gray-600">Complaint Number</p>
+                      </div>
+                      <span className={`px-3 py-1 rounded-full text-sm font-medium ${
+                        approvalLevel === 1 ? 'bg-green-100 text-green-800' :
+                        approvalLevel === 2 ? 'bg-yellow-100 text-yellow-800' :
+                        'bg-red-100 text-red-800'
+                      }`}>
+                        Level {approvalLevel}
+                      </span>
                     </div>
-                    <div className="flex flex-col gap-1">
-                      <label className="text-sm font-semibold text-gray-600 uppercase tracking-wide">New Name:</label>
-                      <span className="text-gray-900">{form.newConnectionAccountName}</span>
-                    </div>
-                    <div className="flex flex-col gap-1">
-                      <label className="text-sm font-semibold text-gray-600 uppercase tracking-wide">Address:</label>
-                      <span className="text-gray-900 break-words">{form.connectionAccountAddress}</span>
-                    </div>
-                    <div className="flex flex-col gap-1">
-                      <label className="text-sm font-semibold text-gray-600 uppercase tracking-wide">Change Method:</label>
-                      <span className="text-gray-900">{form.changeMethod}</span>
-                    </div>
-                    <div className="flex flex-col gap-1">
-                      <label className="text-sm font-semibold text-gray-600 uppercase tracking-wide">Complaint Number:</label>
-                      <span className="text-gray-900">{form.complaintNumber || 'N/A'}</span>
-                    </div>
-                    <div className="flex flex-col gap-1">
-                      <label className="text-sm font-semibold text-gray-600 uppercase tracking-wide">Prepared By:</label>
-                      <span className="text-gray-900">{form.formPreparationEmpName} ({form.formPreparationEmpID})</span>
-                    </div>
-                    <div className="flex flex-col gap-1">
-                      <label className="text-sm font-semibold text-gray-600 uppercase tracking-wide">Preparation Date:</label>
-                      <span className="text-gray-900">{form.formPreparationDate}</span>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <p className="text-sm font-medium text-gray-600 mb-1">Current Name</p>
+                        <p className="text-gray-900 font-medium">{form.connectionAccountName}</p>
+                      </div>
+                      <div>
+                        <p className="text-sm font-medium text-gray-600 mb-1">New Name</p>
+                        <p className="text-gray-900 font-medium">{form.newConnectionAccountName}</p>
+                      </div>
+                      <div className="md:col-span-2">
+                        <p className="text-sm font-medium text-gray-600 mb-1">Address</p>
+                        <p className="text-gray-900 text-sm">{form.connectionAccountAddress}</p>
+                      </div>
+                      <div>
+                        <p className="text-sm font-medium text-gray-600 mb-1">Change Method</p>
+                        <p className="text-gray-900 text-sm">{form.changeMethod}</p>
+                      </div>
+                      <div>
+                        <p className="text-sm font-medium text-gray-600 mb-1">Connection Number</p>
+                        <p className="text-gray-900 text-sm">{form.connectionAccountNumber || 'N/A'}</p>
+                      </div>
+                      <div>
+                        <p className="text-sm font-medium text-gray-600 mb-1">Prepared By</p>
+                        <p className="text-gray-900 text-sm">{form.formPreparationEmpName}</p>
+                      </div>
+                      <div>
+                        <p className="text-sm font-medium text-gray-600 mb-1">Preparation Date</p>
+                        <p className="text-gray-900 text-sm">{form.formPreparationDate}</p>
+                      </div>
                     </div>
                   </div>
 
-                  <div className="mb-6 p-5 bg-gray-50 rounded-lg">
-                    <h4 className="text-lg font-semibold text-gray-700 mb-4">Approval Status</h4>
-                    <div className="space-y-3">
-                      <div className="flex justify-between items-center py-2 border-b border-gray-200 last:border-b-0">
-                        <span className="text-sm text-gray-600">Level 1 ({form.formApproval1Position}):</span>
+                  <div className="p-6 bg-gray-50">
+                    <h4 className="text-sm font-semibold text-gray-700 mb-3 uppercase tracking-wide">Approval Status</h4>
+                    <div className="space-y-2">
+                      <div className="flex justify-between items-center py-2">
+                        <span className="text-sm text-gray-600">Level 1 ({form.formApproval1Position})</span>
                         <span className={getStatusBadgeClass(form.formApproval1Status)}>
                           {form.formApproval1Status}
                         </span>
                       </div>
-                      <div className="flex justify-between items-center py-2 border-b border-gray-200 last:border-b-0">
-                        <span className="text-sm text-gray-600">Level 2 ({form.formApproval2Position}):</span>
+                      <div className="flex justify-between items-center py-2">
+                        <span className="text-sm text-gray-600">Level 2 ({form.formApproval2Position})</span>
                         <span className={getStatusBadgeClass(form.formApproval2Status)}>
                           {form.formApproval2Status}
                         </span>
                       </div>
-                      <div className="flex justify-between items-center py-2 border-b border-gray-200 last:border-b-0">
-                        <span className="text-sm text-gray-600">Level 3 ({form.formApproval3Position}):</span>
+                      <div className="flex justify-between items-center py-2">
+                        <span className="text-sm text-gray-600">Level 3 ({form.formApproval3Position})</span>
                         <span className={getStatusBadgeClass(form.formApproval3Status)}>
                           {form.formApproval3Status}
                         </span>
@@ -242,101 +278,109 @@ export default function ApprovalsDashboard() {
                     </div>
                   </div>
 
-                  <div className="flex gap-3 mb-6">
-                    <button
-                      onClick={() => fetchConnectionDetails(form.connectionAccountNumber)}
-                      disabled={detailsLoading}
-                      className="px-4 py-2 bg-blue-600 text-white font-medium rounded hover:bg-blue-700 transition-colors disabled:bg-gray-400"
-                    >
-                      {detailsLoading ? 'Loading...' : 'View Connection Details'}
-                    </button>
-                    <button
-                      onClick={() => fetchDocuments(form.connectionAccountNumber)}
-                      disabled={detailsLoading}
-                      className="px-4 py-2 bg-indigo-600 text-white font-medium rounded hover:bg-indigo-700 transition-colors disabled:bg-gray-400"
-                    >
-                      {detailsLoading ? 'Loading...' : 'View Documents'}
-                    </button>
-                  </div>
-
-                  {canApproveForm && (
-                    <div className="p-5 bg-gradient-to-r from-pink-500 to-red-500 rounded-lg text-white">
-                      <h4 className="text-lg font-semibold mb-4">Your Action Required</h4>
-                      <div className="flex gap-3">
-                        <button
-                          onClick={() => handleApproval(form._id, `approval${approvalLevel}`, 'Approved')}
-                          className="px-5 py-2.5 bg-green-600 text-white font-semibold rounded hover:bg-green-700 transition-colors transform hover:-translate-y-0.5"
-                        >
-                          Approve
-                        </button>
-                        <button
-                          onClick={() => handleApproval(form._id, `approval${approvalLevel}`, 'Rejected')}
-                          className="px-5 py-2.5 bg-red-600 text-white font-semibold rounded hover:bg-red-700 transition-colors transform hover:-translate-y-0.5"
-                        >
-                          Reject
-                        </button>
-                      </div>
+                  <div className="p-6 border-t border-gray-100">
+                    <div className="flex gap-3 mb-4">
+                      <button
+                        onClick={() => fetchConnectionDetails(form.connectionAccountNumber)}
+                        disabled={detailsLoading}
+                        className="flex items-center space-x-2 px-4 py-2 rounded-lg text-white transition-all hover:shadow-md disabled:opacity-50"
+                        style={{ backgroundColor: '#510400' }}
+                      >
+                        <Eye size={16} />
+                        <span>View Details</span>
+                      </button>
+                      <button
+                        onClick={() => fetchDocuments(form.connectionAccountNumber)}
+                        disabled={detailsLoading}
+                        className="flex items-center space-x-2 px-4 py-2 rounded-lg text-white transition-all hover:shadow-md disabled:opacity-50"
+                        style={{ backgroundColor: '#650015' }}
+                      >
+                        <FileText size={16} />
+                        <span>Documents</span>
+                      </button>
                     </div>
-                  )}
+
+                    {canApproveForm && (
+                      <div className="p-4 rounded-lg border border-gray-200 bg-white">
+                        <h4 className="text-sm font-semibold text-gray-700 mb-3">Your Action Required</h4>
+                        <div className="flex gap-2">
+                          <button
+                            onClick={() => handleApproval(form._id, `approval${approvalLevel}`, 'Approved')}
+                            className="flex items-center space-x-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-all hover:shadow-md"
+                          >
+                            <Check size={16} />
+                            <span>Approve</span>
+                          </button>
+                          <button
+                            onClick={() => handleApproval(form._id, `approval${approvalLevel}`, 'Rejected')}
+                            className="flex items-center space-x-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-all hover:shadow-md"
+                          >
+                            <X size={16} />
+                            <span>Reject</span>
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
                 </div>
-              </div>
-            );
-          })}
-        </div>
-      )}
+              );
+            })}
+          </div>
+        )}
+      </main>
 
       {/* Connection Details Modal */}
       {showConnectionModal && selectedConnection && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-            <div className="bg-gradient-to-r from-blue-500 to-blue-700 text-white p-6 rounded-t-xl">
+            <div className="p-6 border-b border-gray-200">
               <div className="flex justify-between items-center">
-                <h2 className="text-2xl font-bold">Connection Details</h2>
+                <h2 className="text-xl font-semibold text-gray-800">Connection Details</h2>
                 <button
                   onClick={() => setShowConnectionModal(false)}
-                  className="text-white hover:text-gray-200 text-2xl font-bold"
+                  className="text-gray-400 hover:text-gray-600 transition-colors"
                 >
-                  ×
+                  <X size={24} />
                 </button>
               </div>
             </div>
             <div className="p-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="flex flex-col gap-2">
-                  <label className="text-sm font-semibold text-gray-600">Account Number:</label>
-                  <span className="text-gray-900 font-medium">{selectedConnection.connectionAccountNumber}</span>
+                <div>
+                  <p className="text-sm font-medium text-gray-600 mb-1">Account Number</p>
+                  <p className="text-gray-900 font-medium">{selectedConnection.connectionAccountNumber}</p>
                 </div>
-                <div className="flex flex-col gap-2">
-                  <label className="text-sm font-semibold text-gray-600">Owner Name:</label>
-                  <span className="text-gray-900 font-medium">{selectedConnection.ownerName}</span>
+                <div>
+                  <p className="text-sm font-medium text-gray-600 mb-1">Owner Name</p>
+                  <p className="text-gray-900 font-medium">{selectedConnection.ownerName}</p>
                 </div>
-                <div className="flex flex-col gap-2">
-                  <label className="text-sm font-semibold text-gray-600">Address:</label>
-                  <span className="text-gray-900 font-medium">{selectedConnection.connectionAddress}</span>
+                <div className="md:col-span-2">
+                  <p className="text-sm font-medium text-gray-600 mb-1">Address</p>
+                  <p className="text-gray-900">{selectedConnection.connectionAddress}</p>
                 </div>
-                <div className="flex flex-col gap-2">
-                  <label className="text-sm font-semibold text-gray-600">NIC:</label>
-                  <span className="text-gray-900 font-medium">{selectedConnection.ownerNIC}</span>
+                <div>
+                  <p className="text-sm font-medium text-gray-600 mb-1">NIC</p>
+                  <p className="text-gray-900">{selectedConnection.ownerNIC}</p>
                 </div>
-                <div className="flex flex-col gap-2">
-                  <label className="text-sm font-semibold text-gray-600">Phone:</label>
-                  <span className="text-gray-900 font-medium">{selectedConnection.ownerPhone}</span>
+                <div>
+                  <p className="text-sm font-medium text-gray-600 mb-1">Phone</p>
+                  <p className="text-gray-900">{selectedConnection.ownerPhone}</p>
                 </div>
-                <div className="flex flex-col gap-2">
-                  <label className="text-sm font-semibold text-gray-600">Area:</label>
-                  <span className="text-gray-900 font-medium">{selectedConnection.area}</span>
+                <div>
+                  <p className="text-sm font-medium text-gray-600 mb-1">Area</p>
+                  <p className="text-gray-900">{selectedConnection.area}</p>
                 </div>
-                <div className="flex flex-col gap-2">
-                  <label className="text-sm font-semibold text-gray-600">Grama Niladhari Division:</label>
-                  <span className="text-gray-900 font-medium">{selectedConnection.gramaNiladhariDivision}</span>
+                <div>
+                  <p className="text-sm font-medium text-gray-600 mb-1">Grama Niladhari Division</p>
+                  <p className="text-gray-900">{selectedConnection.gramaNiladhariDivision}</p>
                 </div>
-                <div className="flex flex-col gap-2">
-                  <label className="text-sm font-semibold text-gray-600">Divisional Secretariat:</label>
-                  <span className="text-gray-900 font-medium">{selectedConnection.divisionalSecretariat}</span>
+                <div>
+                  <p className="text-sm font-medium text-gray-600 mb-1">Divisional Secretariat</p>
+                  <p className="text-gray-900">{selectedConnection.divisionalSecretariat}</p>
                 </div>
-                <div className="flex flex-col gap-2 md:col-span-2">
-                  <label className="text-sm font-semibold text-gray-600">Purpose:</label>
-                  <span className="text-gray-900 font-medium">{selectedConnection.purpose}</span>
+                <div className="md:col-span-2">
+                  <p className="text-sm font-medium text-gray-600 mb-1">Purpose</p>
+                  <p className="text-gray-900">{selectedConnection.purpose}</p>
                 </div>
               </div>
             </div>
@@ -348,21 +392,23 @@ export default function ApprovalsDashboard() {
       {showDocumentsModal && selectedDocuments && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
-            <div className="bg-gradient-to-r from-indigo-500 to-indigo-700 text-white p-6 rounded-t-xl">
+            <div className="p-6 border-b border-gray-200">
               <div className="flex justify-between items-center">
-                <h2 className="text-2xl font-bold">Documents - {selectedDocuments.connectionAccountNumber}</h2>
-                <div className="flex gap-4">
+                <h2 className="text-xl font-semibold text-gray-800">Documents - {selectedDocuments.connectionAccountNumber}</h2>
+                <div className="flex gap-3">
                   <button
                     onClick={() => downloadDocuments(selectedDocuments.connectionAccountNumber)}
-                    className="bg-white text-indigo-600 px-4 py-2 rounded hover:bg-gray-100 transition-colors"
+                    className="flex items-center space-x-2 px-4 py-2 rounded-lg text-white transition-all hover:shadow-md"
+                    style={{ backgroundColor: '#650015' }}
                   >
-                    Download All
+                    <Download size={16} />
+                    <span>Download All</span>
                   </button>
                   <button
                     onClick={() => setShowDocumentsModal(false)}
-                    className="text-white hover:text-gray-200 text-2xl font-bold"
+                    className="text-gray-400 hover:text-gray-600 transition-colors"
                   >
-                    ×
+                    <X size={24} />
                   </button>
                 </div>
               </div>
@@ -375,15 +421,17 @@ export default function ApprovalsDashboard() {
                   if (Array.isArray(value)) {
                     return value.map((doc, index) => (
                       <div key={`${key}-${index}`} className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
-                        <h4 className="font-semibold text-gray-800 mb-2">Other Document {index + 1}</h4>
-                        <p className="text-sm text-gray-600 mb-3">Filename: {doc.filename}</p>
+                        <h4 className="font-medium text-gray-800 mb-2">Other Document {index + 1}</h4>
+                        <p className="text-sm text-gray-600 mb-3 truncate">{doc.filename}</p>
                         <a
                           href={`http://localhost:5000/${doc.url}`}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="inline-block bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 transition-colors"
+                          className="inline-flex items-center space-x-1 px-3 py-2 rounded-lg text-white text-sm transition-all hover:shadow-md"
+                          style={{ backgroundColor: '#650015' }}
                         >
-                          View Document
+                          <Eye size={14} />
+                          <span>View</span>
                         </a>
                       </div>
                     ));
@@ -392,15 +440,17 @@ export default function ApprovalsDashboard() {
                   if (typeof value === 'object' && value !== null) {
                     return (
                       <div key={key} className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
-                        <h4 className="font-semibold text-gray-800 mb-2">{key.replace(/([A-Z])/g, ' $1').trim()}</h4>
-                        <p className="text-sm text-gray-600 mb-3">Filename: {value.filename}</p>
+                        <h4 className="font-medium text-gray-800 mb-2 capitalize">{key.replace(/([A-Z])/g, ' $1').trim()}</h4>
+                        <p className="text-sm text-gray-600 mb-3 truncate">{value.filename}</p>
                         <a
                           href={`http://localhost:5000/${value.url}`}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="inline-block bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 transition-colors"
+                          className="inline-flex items-center space-x-1 px-3 py-2 rounded-lg text-white text-sm transition-all hover:shadow-md"
+                          style={{ backgroundColor: '#650015' }}
                         >
-                          View Document
+                          <Eye size={14} />
+                          <span>View</span>
                         </a>
                       </div>
                     );

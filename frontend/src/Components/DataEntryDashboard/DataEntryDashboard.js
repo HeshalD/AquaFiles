@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from '../../api/axios';
 import useLogout from '../../Hooks/useLogout';
+import { Search, LogOut, Plus, Edit, Trash2, FileEdit } from 'lucide-react';
 
 const DataEntryDashboard = () => {
   const [connections, setConnections] = useState([]);
@@ -34,10 +35,9 @@ const DataEntryDashboard = () => {
   
     try {
       await axios.delete(`/connections/${connectionAccountNumber}`, {
-        data: { password }, // send password in request body
+        data: { password },
       });
       alert('Connection deleted successfully');
-      // Refresh the connections list
       const res = await axios.get('/connections', {
         params: { page, limit: 10, search, area, purpose }
       });
@@ -48,73 +48,180 @@ const DataEntryDashboard = () => {
       console.error('Error deleting connection:', error);
     }
   };
-  
-
 
   return (
-    <div className="p-8">
-      <h1 className="mb-4 text-2xl font-bold">Data Entry Dashboard</h1>
-
-      <button onClick={logout} className="px-4 py-2 text-white bg-red-500 rounded">Logout</button>
-      <button onClick={() => navigate('/connection-form')} className="px-4 py-2 text-white bg-blue-600 rounded">Add Connection</button>
-      <button onClick={() => navigate('/name-change')} className="px-4 py-2 text-white bg-green-600 rounded">Name Change Form</button>
-      <button onClick={() => navigate('/examine')} className="px-4 py-2 text-white bg-green-600 rounded">Examine Name Change Form</button>
-
-      <input
-        type="text"
-        placeholder="Search by Account Number, Owner Name, NIC, Phone"
-        value={search}
-        onChange={e => setSearch(e.target.value)}
-        className="p-2 mb-3 w-full rounded border"
-      />
-
-      {/* Example predefined options for area and purpose */}
-      <select value={area} onChange={e => setArea(e.target.value)} className="p-2 mb-3 w-full rounded border">
-        <option value="">All Areas</option>
-        <option value="Area1">Area1</option>
-        <option value="Area2">Area2</option>
-      </select>
-
-      <select value={purpose} onChange={e => setPurpose(e.target.value)} className="p-2 mb-3 w-full rounded border">
-        <option value="">All Purposes</option>
-        <option value="Residential">Residential</option>
-        <option value="Commercial">Commercial</option>
-      </select>
-
-      <div className="bg-white rounded shadow">
-        {connections.map(conn => (
-          <div key={conn.connectionAccountNumber} className="flex justify-between items-center px-4 py-2 border-b hover:bg-gray-100">
-            <Link to={`/data-entry/connections/${conn.connectionAccountNumber}/edit`} className="flex-grow">
-              {conn.connectionAccountNumber} - {conn.ownerName}
-            </Link>
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+      {/* Header */}
+      <header className="bg-white border-b border-gray-200 shadow-sm">
+        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+          <div className="flex items-center space-x-3">
+            <div className="w-10 h-10 rounded-lg flex items-center justify-center" style={{ backgroundColor: '#510400' }}>
+              <span className="text-white font-bold text-lg">R</span>
+            </div>
+            <h1 className="text-2xl font-semibold" style={{ color: '#510400' }}>RecordRoom</h1>
+          </div>
+          
+          <div className="flex items-center space-x-3">
             <button
-              onClick={() => handleDelete(conn.connectionAccountNumber)}
-              className="px-3 py-1 ml-4 text-sm text-white bg-red-500 rounded hover:bg-red-600"
+              onClick={() => navigate('/connection-form')}
+              className="flex items-center space-x-2 px-4 py-2 rounded-lg text-white transition-all hover:shadow-md"
+              style={{ backgroundColor: '#510400' }}
             >
-              Delete
+              <Plus size={18} />
+              <span className="hidden sm:inline">Add Connection</span>
+            </button>
+            
+            <button
+              onClick={() => navigate('/name-change')}
+              className="flex items-center space-x-2 px-4 py-2 rounded-lg text-white transition-all hover:shadow-md"
+              style={{ backgroundColor: '#650015' }}
+            >
+              <FileEdit size={18} />
+              <span className="hidden sm:inline">Name Change</span>
+            </button>
+            
+            <button
+              onClick={() => navigate('/examine')}
+              className="flex items-center space-x-2 px-4 py-2 rounded-lg text-white transition-all hover:shadow-md"
+              style={{ backgroundColor: '#660033' }}
+            >
+              <Edit size={18} />
+              <span className="hidden sm:inline">Examine Form</span>
+            </button>
+            
+            <button
+              onClick={logout}
+              className="flex items-center space-x-2 px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-all"
+            >
+              <LogOut size={18} />
+              <span className="hidden sm:inline">Logout</span>
             </button>
           </div>
-        ))}
-      </div>
+        </div>
+      </header>
 
-      {/* Pagination buttons */}
-      <div className="flex justify-center mt-4 space-x-4">
-        <button
-          onClick={() => setPage(p => Math.max(p - 1, 1))}
-          disabled={page === 1}
-          className={`px-4 py-2 rounded ${page === 1 ? 'bg-gray-300' : 'bg-blue-600 text-white'}`}
-        >
-          Prev
-        </button>
-        <span className="flex items-center">Page {page} of {pages}</span>
-        <button
-          onClick={() => setPage(p => Math.min(p + 1, pages))}
-          disabled={page === pages}
-          className={`px-4 py-2 rounded ${page === pages ? 'bg-gray-300' : 'bg-blue-600 text-white'}`}
-        >
-          Next
-        </button>
-      </div>
+      {/* Main Content */}
+      <main className="max-w-7xl mx-auto px-6 py-8">
+        {/* Filters Section */}
+        <div className="bg-white rounded-xl shadow-sm p-6 mb-6">
+          <h2 className="text-lg font-semibold text-gray-800 mb-4">Search & Filter</h2>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="relative col-span-1 md:col-span-1">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+              <input
+                type="text"
+                placeholder="Account, Name, NIC or Phone"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent transition-all"
+              />
+            </div>
+
+            <select
+              value={area}
+              onChange={(e) => setArea(e.target.value)}
+              className="px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent bg-white transition-all"
+            >
+              <option value="">All Areas</option>
+              <option value="Area1">Area1</option>
+              <option value="Area2">Area2</option>
+            </select>
+
+            <select
+              value={purpose}
+              onChange={(e) => setPurpose(e.target.value)}
+              className="px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent bg-white transition-all"
+            >
+              <option value="">All Purposes</option>
+              <option value="Residential">Residential</option>
+              <option value="Commercial">Commercial</option>
+            </select>
+          </div>
+        </div>
+
+        {/* Connections List */}
+        <div className="bg-white rounded-xl shadow-sm overflow-hidden">
+          <div className="px-6 py-4 border-b border-gray-200">
+            <h2 className="text-lg font-semibold text-gray-800">Connections</h2>
+          </div>
+          
+          <div className="divide-y divide-gray-200">
+            {connections.length > 0 ? (
+              connections.map((conn) => (
+                <div
+                  key={conn.connectionAccountNumber}
+                  className="flex items-center justify-between px-6 py-4 hover:bg-gray-50 transition-colors group"
+                >
+                  <Link
+                    to={`/data-entry/connections/${conn.connectionAccountNumber}/edit`}
+                    className="flex-grow"
+                  >
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="font-medium text-gray-900 group-hover:text-opacity-80" style={{ color: '#510400' }}>
+                          {conn.connectionAccountNumber}
+                        </p>
+                        <p className="text-sm text-gray-600 mt-1">{conn.ownerName}</p>
+                      </div>
+                    </div>
+                  </Link>
+                  
+                  <button
+                    onClick={() => handleDelete(conn.connectionAccountNumber)}
+                    className="flex items-center space-x-1 px-3 py-2 ml-4 text-sm text-white bg-red-500 rounded-lg hover:bg-red-600 transition-all hover:shadow-md"
+                  >
+                    <Trash2 size={16} />
+                    <span>Delete</span>
+                  </button>
+                </div>
+              ))
+            ) : (
+              <div className="px-6 py-12 text-center">
+                <p className="text-gray-500">No connections found.</p>
+                <p className="text-sm text-gray-400 mt-1">Try adjusting your search or filters</p>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Pagination */}
+        {connections.length > 0 && (
+          <div className="flex items-center justify-center mt-6 space-x-4">
+            <button
+              onClick={() => setPage(p => Math.max(p - 1, 1))}
+              disabled={page === 1}
+              className={`px-5 py-2.5 rounded-lg font-medium transition-all ${
+                page === 1
+                  ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                  : 'text-white hover:shadow-md'
+              }`}
+              style={page !== 1 ? { backgroundColor: '#510400' } : {}}
+            >
+              Previous
+            </button>
+            
+            <div className="px-4 py-2 bg-white rounded-lg shadow-sm border border-gray-200">
+              <span className="text-sm font-medium text-gray-700">
+                Page <span style={{ color: '#510400' }}>{page}</span> of {pages}
+              </span>
+            </div>
+            
+            <button
+              onClick={() => setPage(p => Math.min(p + 1, pages))}
+              disabled={page === pages}
+              className={`px-5 py-2.5 rounded-lg font-medium transition-all ${
+                page === pages
+                  ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                  : 'text-white hover:shadow-md'
+              }`}
+              style={page !== pages ? { backgroundColor: '#510400' } : {}}
+            >
+              Next
+            </button>
+          </div>
+        )}
+      </main>
     </div>
   );
 };

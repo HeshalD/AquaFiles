@@ -2,10 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from '../../api/axios';
 import useLogout from '../../Hooks/useLogout';
+import { Search, LogOut, FileText, CheckCircle } from 'lucide-react';
 
-
-const areas = ['Area 1', 'Area 2', 'Area 3']; // replace with your actual area options
-const purposes = ['Purpose A', 'Purpose B', 'Purpose C']; // replace with your actual purpose options
+const areas = ['Area 1', 'Area 2', 'Area 3'];
+const purposes = ['Purpose A', 'Purpose B', 'Purpose C'];
 
 const DataViewingDashboard = () => {
   const logout = useLogout();
@@ -40,7 +40,6 @@ const DataViewingDashboard = () => {
     fetchConnections();
   }, [page, search, area, purpose]);
 
-  // When filters or search change, reset to page 1
   useEffect(() => {
     setPage(1);
   }, [search, area, purpose]);
@@ -54,94 +53,171 @@ const DataViewingDashboard = () => {
   };
 
   return (
-    <div className="p-8">
-      <div className="flex justify-between mb-4">
-        <h1 className="text-2xl font-bold">Data Viewing Dashboard</h1>
-        <button onClick={() => navigate('/examine')} className="px-4 py-2 text-white bg-green-600 rounded">Examine Name Change Form</button>
-        <button onClick={() => navigate('/approved-examined')} className="px-4 py-2 text-white bg-green-600 rounded">Approved & Examined Name Change Form</button>
-        <button
-          onClick={logout}
-          className="px-4 py-2 text-white bg-red-500 rounded"
-        >
-          Logout
-        </button>
-      </div>
-
-      <div className="flex flex-col mb-4 md:flex-row md:space-x-4">
-        <input
-          type="text"
-          placeholder="Search by Account Number, Owner Name, NIC or Phone"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="flex-1 p-2 mb-2 rounded border md:mb-0"
-        />
-
-        <select
-          value={area}
-          onChange={(e) => setArea(e.target.value)}
-          className="p-2 mb-2 rounded border md:mb-0"
-        >
-          <option value="">All Areas</option>
-          {areas.map((a) => (
-            <option key={a} value={a}>
-              {a}
-            </option>
-          ))}
-        </select>
-
-        <select
-          value={purpose}
-          onChange={(e) => setPurpose(e.target.value)}
-          className="p-2 rounded border"
-        >
-          <option value="">All Purposes</option>
-          {purposes.map((p) => (
-            <option key={p} value={p}>
-              {p}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      <div className="bg-white rounded shadow">
-        {connections.length > 0 ? (
-          connections.map((conn) => (
-            <Link
-              to={`/connections/${conn.connectionAccountNumber}`}
-              key={conn.connectionAccountNumber}
-              className="block px-4 py-2 border-b hover:bg-gray-100"
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+      {/* Header */}
+      <header className="bg-white border-b border-gray-200 shadow-sm">
+        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+          <div className="flex items-center space-x-3">
+            <div className="w-10 h-10 rounded-lg flex items-center justify-center" style={{ backgroundColor: '#510400' }}>
+              <span className="text-white font-bold text-lg">R</span>
+            </div>
+            <h1 className="text-2xl font-semibold" style={{ color: '#510400' }}>RecordRoom</h1>
+          </div>
+          
+          <div className="flex items-center space-x-3">
+            <button
+              onClick={() => navigate('/examine')}
+              className="flex items-center space-x-2 px-4 py-2 rounded-lg text-white transition-all hover:shadow-md"
+              style={{ backgroundColor: '#650015' }}
             >
-              {conn.connectionAccountNumber} - {conn.ownerName}
-            </Link>
-          ))
-        ) : (
-          <p className="p-4 text-center text-gray-500">No connections found.</p>
-        )}
-      </div>
+              <FileText size={18} />
+              <span className="hidden sm:inline">Examine Form</span>
+            </button>
+            
+            <button
+              onClick={() => navigate('/approved-examined')}
+              className="flex items-center space-x-2 px-4 py-2 rounded-lg text-white transition-all hover:shadow-md"
+              style={{ backgroundColor: '#660033' }}
+            >
+              <CheckCircle size={18} />
+              <span className="hidden sm:inline">Approved Forms</span>
+            </button>
+            
+            <button
+              onClick={logout}
+              className="flex items-center space-x-2 px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-all"
+            >
+              <LogOut size={18} />
+              <span className="hidden sm:inline">Logout</span>
+            </button>
+          </div>
+        </div>
+      </header>
 
-      <div className="flex justify-center mt-4 space-x-4">
-        <button
-          onClick={handlePrev}
-          disabled={page === 1}
-          className={`px-4 py-2 rounded ${
-            page === 1 ? 'bg-gray-300 cursor-not-allowed' : 'bg-blue-600 text-white'
-          }`}
-        >
-          Previous
-        </button>
-        <span className="flex items-center">
-          Page {page} of {pages}
-        </span>
-        <button
-          onClick={handleNext}
-          disabled={page === pages}
-          className={`px-4 py-2 rounded ${
-            page === pages ? 'bg-gray-300 cursor-not-allowed' : 'bg-blue-600 text-white'
-          }`}
-        >
-          Next
-        </button>
-      </div>
+      {/* Main Content */}
+      <main className="max-w-7xl mx-auto px-6 py-8">
+        {/* Filters Section */}
+        <div className="bg-white rounded-xl shadow-sm p-6 mb-6">
+          <h2 className="text-lg font-semibold text-gray-800 mb-4">Search & Filter</h2>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="relative col-span-1 md:col-span-1">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+              <input
+                type="text"
+                placeholder="Account, Name, NIC or Phone"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent transition-all"
+                style={{ focusRing: '#510400' }}
+              />
+            </div>
+
+            <select
+              value={area}
+              onChange={(e) => setArea(e.target.value)}
+              className="px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent bg-white transition-all"
+            >
+              <option value="">All Areas</option>
+              {areas.map((a) => (
+                <option key={a} value={a}>{a}</option>
+              ))}
+            </select>
+
+            <select
+              value={purpose}
+              onChange={(e) => setPurpose(e.target.value)}
+              className="px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent bg-white transition-all"
+            >
+              <option value="">All Purposes</option>
+              {purposes.map((p) => (
+                <option key={p} value={p}>{p}</option>
+              ))}
+            </select>
+          </div>
+        </div>
+
+        {/* Connections List */}
+        <div className="bg-white rounded-xl shadow-sm overflow-hidden">
+          <div className="px-6 py-4 border-b border-gray-200">
+            <h2 className="text-lg font-semibold text-gray-800">Connections</h2>
+          </div>
+          
+          <div className="divide-y divide-gray-200">
+            {connections.length > 0 ? (
+              connections.map((conn) => (
+                <Link
+                  to={`/connections/${conn.connectionAccountNumber}`}
+                  key={conn.connectionAccountNumber}
+                  className="block px-6 py-4 hover:bg-gray-50 transition-colors group"
+                >
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="font-medium text-gray-900 group-hover:text-opacity-80" style={{ color: '#510400' }}>
+                        {conn.connectionAccountNumber}
+                      </p>
+                      <p className="text-sm text-gray-600 mt-1">{conn.ownerName}</p>
+                    </div>
+                    <svg
+                      className="w-5 h-5 text-gray-400 group-hover:translate-x-1 transition-transform"
+                      fill="none"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path d="M9 5l7 7-7 7"></path>
+                    </svg>
+                  </div>
+                </Link>
+              ))
+            ) : (
+              <div className="px-6 py-12 text-center">
+                <p className="text-gray-500">No connections found.</p>
+                <p className="text-sm text-gray-400 mt-1">Try adjusting your search or filters</p>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Pagination */}
+        {connections.length > 0 && (
+          <div className="flex items-center justify-center mt-6 space-x-4">
+            <button
+              onClick={handlePrev}
+              disabled={page === 1}
+              className={`px-5 py-2.5 rounded-lg font-medium transition-all ${
+                page === 1
+                  ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                  : 'text-white hover:shadow-md'
+              }`}
+              style={page !== 1 ? { backgroundColor: '#510400' } : {}}
+            >
+              Previous
+            </button>
+            
+            <div className="px-4 py-2 bg-white rounded-lg shadow-sm border border-gray-200">
+              <span className="text-sm font-medium text-gray-700">
+                Page <span style={{ color: '#510400' }}>{page}</span> of {pages}
+              </span>
+            </div>
+            
+            <button
+              onClick={handleNext}
+              disabled={page === pages}
+              className={`px-5 py-2.5 rounded-lg font-medium transition-all ${
+                page === pages
+                  ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                  : 'text-white hover:shadow-md'
+              }`}
+              style={page !== pages ? { backgroundColor: '#510400' } : {}}
+            >
+              Next
+            </button>
+          </div>
+        )}
+      </main>
     </div>
   );
 };
